@@ -83,10 +83,10 @@ exports.addTopics = async (req, res) => {
         }
 
         const [evaluation] = await mysqli.query(`
-            SELECT id FROM EvaluationTopic WHERE id = ?
+            SELECT id FROM evaluation WHERE id = ?
             `, [evaluationId])
 
-        if (evaluation.length > 0) {
+        if (evaluation.length === 0) {
             return res.status(404).json({
                 success: false,
                 message: 'ไม่มีการประเมินนี้'
@@ -158,6 +158,108 @@ exports.deleteTopics = async (req, res) => {
         const { id } = req.params
         await mysqli.query(`
         DELETE FROM EvaluationTopic WHERE id = ?
+        `, [id])
+
+        res.json({
+            success: true,
+            message: 'ลบหัวข้อประเมินสำเร็จ'
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error
+        })
+    }
+}
+
+// indicator
+exports.addIndicator = async (req, res) => {
+    try {
+        const { title, description, topicId, evidenceDescription, IndicatorType, weight } = req.body
+
+        if (!title || !description || !topicId || !evidenceDescription || !IndicatorType || !weight) {
+            return res.status(400).json({
+                success: false,
+                message: "กรอกให้ครบ"
+            })
+        }
+
+        const [topics] = await mysqli.query(`
+            SELECT id FROM EvaluationTopic WHERE id = ?
+            `, [topicId])
+
+        if (topics.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'ไม่มีหัวข้อการประเมินนี้'
+            })
+        }
+
+        const [result] = await mysqli.query(`
+            INSERT INTO Indicator (title, description, topicId, evidenceDescription, IndicatorType, weight)
+            VALUES (?,?,?,?,?,?)
+            `, [title, description, topicId, evidenceDescription, IndicatorType, weight])
+
+        res.json({
+            success: true,
+            message: 'เพิ่มข้อมูลสำเร็จ',
+            data: {
+                id: result.insertId
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error
+        })
+    }
+}
+exports.getIndicator = async (req, res) => {
+    try {
+        const [indicators] = await mysqli.query(`
+            SELECT i.*, t.id
+            FROM Indicator i
+            JOIN EvaluationTopic t ON i.topicId = t.id
+            `)
+
+        res.json({
+            success: true,
+            data: {
+                indicators
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error
+        })
+    }
+}
+exports.updateIndicator = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { title, description, topicId, evidenceDescription, IndicatorType, weight } = req.body
+
+        await mysqli.query(`
+            UPDATE Indicator SET title = ?, description = ? , topicId = ?,evidenceDescription = ?,IndicatorType = ? , weight = ?  WHERE id = ?
+            `, [title, description, topicId, evidenceDescription, IndicatorType, weight, id])
+
+        res.json({
+            success: true,
+            message: 'แก้ไขสำเร็จ'
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error
+        })
+    }
+}
+exports.deleteIndicator = async (req, res) => {
+    try {
+        const { id } = req.params
+        await mysqli.query(`
+        DELETE FROM Indicator WHERE id = ?
         `, [id])
 
         res.json({
