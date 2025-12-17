@@ -29,6 +29,11 @@ router.get('/admin/indicator',auth, adminController.getIndicator)
 router.post('/admin/indicator',auth, adminController.addIndicator)
 router.put('/admin/indicator/:id', auth ,adminController.updateIndicator)
 router.delete('/admin/indicator/:id', auth ,adminController.deleteIndicator)
+// router.post('/admin/indicator/:id/level', auth ,adminController.addIndicatorLevel)
+
+//allocation
+router.get('/admin/allocation',auth, adminController.getAllocation)
+router.post('/admin/allocation',auth, adminController.addAllocation)
 
 //employee
 router.get('/employee/profile',auth ,employeeController.getProfile)

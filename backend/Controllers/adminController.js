@@ -274,3 +274,57 @@ exports.deleteIndicator = async (req, res) => {
     }
 }
 
+// allocation
+exports.addAllocation = async (req, res) => {
+    try {
+        const { evaluationId, evaluateeId, evaluatorId, evaluationComment, evaluatorRole, status, signatureData, signatureDate, submittedAt } = req.body
+
+        if (!evaluationId || !evaluateeId || !evaluatorId) {
+            return res.status(400).json({
+                success: false,
+                message: "กรอกให้ครบ"
+            })
+        }
+
+        const [result] = await mysqli.query(`
+            INSERT INTO EvaluationAllocation (evaluationId, evaluateeId, evaluatorId, evaluationComment, evaluatorRole, status, signatureData, signatureDate, submittedAt)
+            VALUES (?,?,?,?,?,?,?,?,?)
+            `, [evaluationId, evaluateeId, evaluatorId, evaluationComment || null, evaluatorRole || null, status, signatureData, signatureDate, submittedAt])
+
+        res.json({
+            success: true,
+            message: 'เพิ่มข้อมูลสำเร็จ',
+            data: {
+                id: result.insertId
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error
+        })
+    }
+}
+exports.getAllocation = async (req, res) => {
+    try {
+        const [indicators] = await mysqli.query(`
+            SELECT ea.*, e.id as evaluationId, evaluatee.name  as evaluateeName, evaluator.name as evaluatorName
+            FROM EvaluationAllocation ea
+            JOIN Evaluation e ON ea.evaluationId = e.id
+            JOIN Employee evaluatee ON ea.evaluateeId = evaluatee.id
+            JOIN Employee evaluator ON ea.evaluatorId = evaluator.id
+            `)
+
+        res.json({
+            success: true,
+            data: {
+                indicators
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error
+        })
+    }
+}
