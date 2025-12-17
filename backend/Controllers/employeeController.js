@@ -27,11 +27,17 @@ exports.getProfile = async(req,res)=>{
 }
 exports.updateProfile = async(req,res)=>{
     try{
-        const {name, email, password, phoneNumber, departmentId} = req.body
+        const userID = req.user.id
+        const {name, email, password,position, phoneNumber, departmentId} = req.body
 
         await mysqli.query(
-            `UPDATE Employee SET name = ?,password = ?,email = ?,phoneNumber = ?, departmentId = ? WHERE id = ?`
+            `UPDATE Employee SET name = ?, email = ?, password = ?, position = ?,phoneNumber = ?, departmentId = ? WHERE id = ?`,[name, email, password, position || null, phoneNumber || null, departmentId,userID]
         )
+
+        res.json({
+            success: true,
+            message: 'แก้ไขสำเร็จ'
+        })
     }catch(error){
         return res.status(500).json({
             success: false,
