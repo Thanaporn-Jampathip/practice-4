@@ -14,6 +14,12 @@ router.post('/auth/register', authController.register)
 router.post('/auth/login', authController.login)
 router.get('/auth/me', auth ,authController.getme)
 
+//admin
+//evaluation
+router.get('/admin/evaluations',auth, adminController.getEvaluation)
+router.post('/admin/evaluations',auth, adminController.addEvaluation)
+router.put('/admin/evaluations/:id', auth ,adminController.updateEvaluation)
+
 //employee
 router.get('/employee/profile',auth ,employeeController.getProfile)
 router.put('/employee/profile',auth, employeeController.updateProfile)
