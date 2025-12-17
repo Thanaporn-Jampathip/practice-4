@@ -20,6 +20,12 @@ router.get('/admin/evaluations',auth, adminController.getEvaluation)
 router.post('/admin/evaluations',auth, adminController.addEvaluation)
 router.put('/admin/evaluations/:id', auth ,adminController.updateEvaluation)
 
+//topics
+router.get('/admin/topics',auth, adminController.getTopics)
+router.post('/admin/topics',auth, adminController.addTopics)
+router.put('/admin/topics/:id', auth ,adminController.updateTopics)
+router.delete('/admin/topics/:id', auth ,adminController.deleteTopics)
+
 //employee
 router.get('/employee/profile',auth ,employeeController.getProfile)
 router.put('/employee/profile',auth, employeeController.updateProfile)
