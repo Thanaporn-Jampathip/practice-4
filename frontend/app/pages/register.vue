@@ -49,16 +49,6 @@
                 variant="outlined"
               ></v-text-field>
 
-              <!-- เลือก Role -->
-              <v-select
-                v-model="role"
-                :items="roles"
-                label="บทบาท"
-                prepend-icon="mdi-account-badge"
-                required
-                variant="outlined"
-              ></v-select>
-
               <!-- แสดง Error Message -->
               <v-alert
                 v-if="errorMessage"
